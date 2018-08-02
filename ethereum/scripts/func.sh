@@ -11,14 +11,21 @@ function log_info()
     echo -e "[`date`]\t$1"
 }
 
-function init_ethereum_node()
+function start_bootnode()
 {
-    log_steps "init ethereum node";
+    log_steps "start bootnode";
+
+    bootnode -nodekey "${ETHEREUM_BOOTNODE_KEY}" "$@"
+}
+
+function init_geth_node()
+{
+    log_steps "init geth node";
     log_info "datadir: ${ETHEREUM_NODE_DATADIR}";
 
     while [[ ! -f "${ETHEREUM_NODE_INITFLAG}" ]]
     do
-        geth --datadir ${ETHEREUM_NODE_DATADIR} init "${ETHEREUM_GENESIS}";
+        geth --datadir ${ETHEREUM_NODE_DATADIR} init "${ETHEREUM_GENESIS_JSON}";
         if [ $? -eq 0 ];then
             log_info "init node success."
             mkdir -p ${ETHEREUM_NODE_DATADIR} && echo `date` > "${ETHEREUM_NODE_INITFLAG}";
@@ -29,9 +36,9 @@ function init_ethereum_node()
     done
 }
 
-function start_ethereum_node()
+function start_geth_node()
 {
-    log_steps "start ethereum node";
+    log_steps "start geth node";
     log_info "datadir: ${ETHEREUM_NODE_DATADIR}";
 
     geth --datadir ${ETHEREUM_NODE_DATADIR} "$@"
@@ -41,16 +48,15 @@ function bootstrap()
 {
     case $ETHEREUM_NODE_ROLE in
         "bootnode")
-            init_ethereum_node;
-            start_ethereum_node "$@"
+            start_bootnode "$@"
             ;;
         "mine")
-            init_ethereum_node
-            start_ethereum_node --mine "$@"
+            init_geth_node
+            start_geth_node --mine "$@"
             ;;
         "rpc")
-            init_ethereum_node
-            start_ethereum_node --rpc "$@"
+            init_geth_node
+            start_geth_node --rpc "$@"
             ;;
         *)
             log_info "unsupported ethereum node role: $ETHEREUM_NODE_ROLE"

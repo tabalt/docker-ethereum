@@ -10,8 +10,11 @@ fi
 if [ -z "$ETHEREUM_DATADIR" ]; then 
     ETHEREUM_DATADIR="${ETHEREUM_HOME}/data";
 fi
-if [ -z "$ETHEREUM_GENESIS" ]; then 
-    ETHEREUM_GENESIS="${ETHEREUM_DATADIR}/genesis.json";
+if [ -z "$ETHEREUM_GENESIS_JSON" ]; then 
+    ETHEREUM_GENESIS_JSON="${ETHEREUM_DATADIR}/genesis.json";
+fi
+if [ -z "$ETHEREUM_BOOTNODE_KEY" ]; then 
+    ETHEREUM_BOOTNODE_KEY="${ETHEREUM_DATADIR}/bootnode.key";
 fi
 
 if [ -z "$ETHEREUM_NODE_DATADIR" ]; then 
